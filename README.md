@@ -21,6 +21,39 @@ Proyecto para organizar y consultar las finanzas de una casa. La idea es reunir 
 
 Estas ideas son una propuesta inicial y pueden cambiar a medida que se definan las necesidades del hogar.
 
+## Arquitectura propuesta
+
+El siguiente diagrama representa una arquitectura lógica inicial, no componentes ya implementados. La tecnología, el almacenamiento y la estrategia de copias de seguridad están pendientes de definición.
+
+```mermaid
+architecture-beta
+    group access(cloud)[Acceso]
+    group app(server)[Aplicacion por definir]
+    group data(database)[Almacenamiento por definir]
+
+    service person(server)[Persona usuaria] in access
+    service ui(server)[Interfaz] in access
+
+    service movements(server)[Ingresos y gastos] in app
+    service categories(server)[Categorias] in app
+    service budgets(server)[Presupuestos] in app
+    service reports(server)[Resumen e historial] in app
+
+    service db(database)[Datos financieros] in data
+    service backup(disk)[Copia de seguridad] in data
+
+    person:R --> L:ui
+    ui:R --> L:movements
+    movements:T --> B:categories
+    movements:R --> L:budgets
+    movements:R --> L:reports
+    movements:R --> L:db
+    categories:R --> L:db
+    budgets:R --> L:db
+    reports:R --> L:db
+    db:B --> T:backup
+```
+
 ## Plan inicial
 
 1. Definir las necesidades y los datos que se quieren registrar.
